@@ -15,25 +15,25 @@ let transactions =
         ? localStorageTransactions
         : [];
  
-// Add Transactions
+
 function addTransaction(e) {
     e.preventDefault();
 
     if (text.value.trim() === "" || amount.value.trim() === "") {
-        alert("Please add a expense and amount");
+        alert("Please enter transaction name and amount");
     } else {
+        const amountValue = +amount.value;
+        const type = document.querySelector('input[name="type"]:checked').value;
+        const finalAmount = type === "expense" ? -amountValue : amountValue;
         const transaction = {
             id: generateId(),
             text: text.value,
-            amount: +amount.value,
+            amount: finalAmount,
         };
 
         transactions.push(transaction);
-
         addTransactionToDOM(transaction);
-
         updateLocalStoarge();
-
         updateValues();
 
         text.value = "";
@@ -41,13 +41,13 @@ function addTransaction(e) {
     }
 }
 
-// Add Transactions To The DOM List
+
 function addTransactionToDOM(transaction) {
-    // Get the sign plus or minus
+   
     const sign = transaction.amount < 0 ? "-" : "+";
     const item = document.createElement("li");
 
-    // Add classes based on the value
+    
     item.classList.add(transaction.amount < 0 ? "minus" : "plus");
     item.innerHTML = `
         ${transaction.text} <span>${sign}${Math.abs(
@@ -59,7 +59,7 @@ function addTransactionToDOM(transaction) {
     list.appendChild(item);
 }
 
-// Update the balance, income and expenses
+
 function updateValues() {
     const amounts = transactions.map((transaction) => transaction.amount);
     const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
@@ -78,7 +78,6 @@ function updateValues() {
     money_minus.innerText = `$${expense}`;
 }
 
-// Delete The Transactions by ID
 function removeTransaction(id) {
     transactions = transactions.filter((transaction) => transaction.id !== id);
 
@@ -87,12 +86,11 @@ function removeTransaction(id) {
     init();
 }
 
-// Update The Local Storage
 function updateLocalStoarge() {
     localStorage.setItem("transactions", JSON.stringify(transactions));
 }
 
-// Initialize the App
+
 function init() {
     list.innerHTML = "";
 
@@ -102,7 +100,6 @@ function init() {
 
 init();
 
-// Generate a Random ID
 function generateId() {
     return Math.floor(Math.random() * 100000000);
 }
